@@ -1,39 +1,63 @@
 // api/generate/index.js
-const OpenAI = require("openai");   // use require for Azure Functions
+const OpenAI = require("openai");
+
 module.exports = async function (context, req) {
-  context.log("⚡️ /api/generate called with body:", req.body);
+  context.log("🔔 generate invoked with body:", req.body);
 
   const { name, workplaceType, criteria } = req.body || {};
   if (!name || !workplaceType || !criteria) {
-    context.log("❌ Missing inputs", req.body);
     context.res = { status: 400, body: "Missing name, workplaceType or criteria" };
     return;
   }
 
   const key = process.env.OPENAI_API_KEY;
-  context.log("🔑 OPENAI_API_KEY present?", !!key);
+  context.log("🔑 Key present?", !!key);
   if (!key) {
-    context.res = { status: 500, body: "Server error: OPENAI_API_KEY not configured" };
+    context.res = { status: 500, body: "OPENAI_API_KEY not configured in Azure" };
     return;
   }
 
   const openai = new OpenAI({ apiKey: key });
 
   const systemContent = `
-You are tasked with generating 8 off-the-job training activities that are fully ESFA-compliant for a UK apprentice.
+You are tasked with generating 8 off-the-job training activities…
 
-Apprenticeship standard: ${name}
-Workplace type: ${workplaceType}
-Learning focus/criteria: ${criteria}
+Standard: ${name}
+Workplace: ${workplaceType}
+KSB: ${criteria}
 
-Return a JSON array of 8 objects:
-[
-  {"title":"…","description":"…","time":"…"},
-  …
-]
+Return only a JSON array of 8 objects.
 `.trim();
 
   try {
     const resp = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.8,
+      messages: [
+        { role: "system", content: systemContent },
+        { role: "user", content: "Return only the JSON array of 8 items." }
+      ]
+    });
+
+    let txt = resp.choices[0].message.content
+      .replace(/```(?:json)?/g, "")
+      .trim();
+    const start = txt.indexOf("["),
+          end   = txt.lastIndexOf("]") + 1;
+    const ideas = JSON.parse(txt.slice(start, end));
+
+    context.res = {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+      body: ideas
+    };
+
+  } catch (err) {
+    // Return the full error message & stack trace
+    context.log.error("❌ Function error:", err);
+    context.res = {
+      status: 500,
+      body: `Error: ${err.message}\nStack:\n${err.stack}`
+    };
+  }
+};
