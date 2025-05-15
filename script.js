@@ -340,7 +340,7 @@ function showTopBar() {
 );
 
 // Your OpenAI API key
-const API_KEY = "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";
+const API_KEY = process.env.OPENAI_API_KEY;
 
   // Generic wrapper to retry on 5xx errors
   async function callOpenAI(payload, retries = 3) {
