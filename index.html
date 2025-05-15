@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+ <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drawbridge AI</title>
+
+</head>
+<body>
+
+  <div class="container">
+  
+    <!-- Section 1: Input Fields and Generate Button -->
+<section id="section1">
+
+  <div class="input-container">
+    <h2 id="logo-container">
+      <a href="#"><img id="logo-image" src="images/toollogo.png" alt="Logo"></a>
+    </h2>
+    
+    <div id="inputSection">
+        <!-- WRAP all your fields in here: -->
+        <div id="fieldsContainer">
+            <div style="position: relative; max-width: 1000px; margin: 0 auto;">
+                <input type="text" id="apprenticeshipName" class="input-box" autocomplete="off" placeholder="Enter apprenticeship name and level">
+                <div id="suggestions" class="suggestion-box"></div>
+              </div>
+              <input type="text" id="workplaceType" class="input-box" autocomplete="on" placeholder="Enter workplace type">
+              <textarea id="apprenticeshipCriteria" class="input-box" autocomplete="off" resize: none !important; placeholder="Enter learning criteria" rows="5"></textarea>
+        </div>
+        
+        <!-- leave the button OUTSIDE the wrapper -->
+        <button id="generateButton" class="generatebutton">
+          <div class="button-progress" id="buttonProgress"></div>
+          <span>Get Started</span>
+        </button>
+      </div>
+
+</section>
+
+
+    <!-- Section 2: Activity Cards and Additional Buttons -->
+    <section id="section2" class="hidden">
+      <div id="topBar" class="hidden">
+        <button id="startOverTop" class="button">Start Over</button>
+              </div>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+       
+              </div>
+      <div class="ideas-container" id="ideasContainer"></div>
+    </section>
+  </div>
+
+ <div class="dropdown">
+  <button class="dropbtn">&#9776;</button>
+  <div class="dropdown-content">
+    <a href="https://www.instituteforapprenticeships.org/apprenticeship-standards/"target="_blank">Search Criteria</a>
+    <a href=""target="_blank">Help</a>
+  </div>
+</div>
+
+<div id="modalOverlay" class="hidden">
+  <div id="modalContent">
+    <img    id="modalImage"       src="" alt="" />
+    <h2     id="modalTitle"       style="margin-top:1rem;"></h2>
+    <p class="description" id="modalDescription"></p>
+    <div class="info-container">
+      <div class="time-container">
+        <i class="fa-solid fa-clock"></i>
+        <span id="modalTime"></span>
+      </div>
+      <div class="style-container">
+        <i class="fa-solid fa-brain"></i>
+        <span id="modalStyle"></span>
+      </div>
+    </div>
+    <button id="copyBtn" class="generatebutton">Copy Activity</button>
+      </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

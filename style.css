@@ -1,0 +1,849 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Ensure both html and body take up full height */
+  width: 100%;  /* Ensure both html and body take up full width */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  margin: 0; /* Remove any margin */
+  overflow-y: auto;
+  padding: 0; /* Remove any padding */
+  box-sizing: border-box;
+}
+
+#section2 {
+    background: linear-gradient(rgba(0, 0, 0, 1.0), rgba(0, 0, 0, 0.5)), 
+    url('images/background.jpg') center/cover no-repeat fixed;
+  
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+  padding-top: 0; /* Remove padding */
+  border: none; /* Ensure no border is applied */
+  margin-left: -15px;
+  margin-bottom: -15px;
+  margin-top: 50px;
+  transition: padding-top 0.4s ease;
+  padding-top: 0; /* default, no bar space */
+  width: 100vw;
+}
+
+#section2.bar-visible {
+  padding-top: 50px;
+}
+
+#section2.blurred {
+  filter: blur(4px) brightness(0.8);
+  transition: filter 0.3s ease;
+  pointer-events: none; /* prevents clicks on the blurred cards */
+}
+
+#section1 {
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5)), 
+    url('images/background.jpg') center/cover no-repeat fixed;
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+  width: 100vw;
+  margin-left: -15px;
+  margin-top: -35px;
+  height: 102.15vh;
+  margin-bottom: -15px;
+  border: none; /* Ensure no border is applied */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* vertical centering */
+  align-items: center;      /* horizontal centering */
+}
+/* Progress bar container */
+#progressBarContainer {
+  width: 35%;
+  height: 5px;
+  background-color: #f3f3f3;
+  margin-top: 20px;
+  display: block; /* Ensure it's a block-level element */
+  margin-left: auto; /* Centers the container */
+  margin-right: auto; /* Centers the container */
+  display: none; /* Initially hidden */
+}
+
+/* Progress bar itself */
+#progressBar {
+  width: 0%;
+  height: 100%;
+  background-color: #4caf50;
+}
+
+
+
+.card.copied {
+  
+  background-color: #e8f5e9; /* Softer light green background */
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); /* Subtle shadow to emphasize the "copied" state */
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transform: scale(1.02); /* Slight zoom effect for visual feedback */
+}
+
+.info-icon {
+  color: white;
+  margin-left: 8px;
+  cursor: pointer;
+  position: relative;
+}
+
+
+
+@keyframes inputHover {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.input-box:hover {
+  animation: inputHover 0.3s ease-in-out;
+  border-color: #137373;
+  box-shadow: 0 0 8px rgba(19, 115, 115, 0.5);
+}
+
+.section1.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.section2.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.generatebutton.error {
+  background-color: #c0392b;
+}
+
+/* Display error message inside the button */
+.generatebutton.error span {
+  color: white;
+}
+
+/* Optional: for a subtle animation */
+@keyframes buttonErrorAnimation {
+  0% { background-color: #c0392b; }
+  50% { background-color: #c0392b; }
+  100% { background-color: #c0392b; }
+}
+
+.generatebutton.error-animation {
+  animation: buttonErrorAnimation 0.5s ease-in-out;
+}
+
+.time-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px; /* Ensures even spacing */
+  font-size: 12;
+  font-weight: bold;
+  color: white !important;
+  background-color: #a6a6a6;
+  padding: 8px 8px;
+  border-radius: 8px;
+  width: fit-content; /* Ensures consistency across all cards */
+  text-align: left;
+  margin-top: auto;
+}
+
+.time-container i {
+  color: #fff; /* Adjust color */
+  font-size: 15px; !important;
+height: 1em;
+  display: flex;
+    align-items: center;
+}
+
+.time-label {
+  font-weight: normal;
+  font-size: 15px;
+  color: white !important;
+    display: flex;
+    align-items: center;
+line-height: 1;
+}
+
+.time-value {
+  font-weight: normal;
+  color: white !important;
+  display: flex;
+    align-items: center;
+line-height: 1;
+}
+
+.info-container {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.style-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: bold;
+  color: white !important;
+  background-color: #6c8ebf; /* Choose a distinct background color */
+  padding: 8px 8px;
+  border-radius: 8px;
+  width: fit-content;
+  text-align: left;
+}
+
+.style-container i {
+  color: #fff;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.style-label {
+  font-weight: normal;
+  font-size: 15px;
+  color: white !important;
+  line-height: 1;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.card {
+  --bg-card: #ffffff;
+  --primary: #155e5e;
+  --primary-dark: #104848;
+  --light: #333333;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow: hidden;     /* ✱ clips the child so it follows the round corners */
+  padding: 1rem;
+  width: 100%;
+  height: 400px;
+  max-width: 320px;
+  background-color: var(--bg-card);
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 160px;
+  box-sizing: border-box;
+  padding: 0.5rem;              /* less padding to free up space */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;              /* let items wrap onto next line */
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  z-index: 2;
+}
+
+.card-overlay .title {
+  flex: 1 1 auto;               /* allow the title to shrink */
+  min-width: 0;
+  color: #fff;                 /* prevent overflow */
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-overlay .info-container {
+  display: flex;
+  gap: 0.5rem;
+  flex: 0 1 auto;               /* allow wrapping if needed */
+}
+
+.card .time-container {
+  color: white !important;
+}
+
+.card:hover {
+  cursor: pointer;
+  transform: translateY(-3px);            /* very slight upward shift */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);  /* a bit stronger shadow */
+}
+
+.image_container {
+  width: 100%;
+  height: 100%;
+}
+.image_container .activity-image {
+  display: block;        /* remove inline gaps */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* crop & fill without distortion */
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333333;
+  text-align: left;
+  text-transform: capitalize;
+}
+
+.description {
+  display: none;
+}
+
+
+#logo-image {
+  max-height: 400px;
+  height: auto;
+  margin-top: 50px;
+  margin-bottom: -150px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Style for the new subheading */
+.subheading {
+  font-size: 18px;
+  color: white;
+  margin-top: 30px;
+  margin-left: -10px;
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.container {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  h1 {
+    font-size: 50px;
+    padding-top: 50px;
+  }
+  h2 {
+    font-size: 24px; /* smaller title */
+    margin-bottom: 15px;
+    white-space: nowrap;
+    animation: typing 3s steps(20, end) forwards, blink 0.7s step-end infinite;
+  }
+}
+
+/* Typing animation */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 30%; }
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+  67% { border-color: transparent; }
+}
+
+.input-box {
+  background-color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  display: block;
+  font-size: 16px;
+  color: #ffffff;
+  outline: none;
+  max-width: 550px;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.input-box:focus {
+  animation: inputFocus 0.3s ease-in-out;
+  transform: scale(1.04);
+  border-color: #0f5252;
+  box-shadow: 0 0 12px rgba(15, 82, 82, 0.7);
+  background-color: rgba(255, 255, 255, 0.95); /* Slightly brightened background */
+  outline: none; /* Removes default browser outline */
+}
+
+.input-box, .button {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: normal;
+  box-sizing: border-box;
+  color: black;
+}
+
+.input-box, .generatebutton {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: normal;
+  box-sizing: border-box;
+  color: black;
+}
+
+.input-box::placeholder {
+  color: black;
+  opacity: 0.8;
+  font-weight: normal;
+}
+
+.button {
+  background-color: white;
+  color: black;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  padding: 12px 20px;
+  font-size: 16px;
+  padding-top: 15px;
+  font-weight: bold;
+  height: 4em;
+  margin-top: 20px;
+  max-width: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: Arial, sans-serif;
+}
+
+.generatebutton {
+  position: relative; /* Required for inner progress layer */
+  background-color: #155e5e;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  padding-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  height: 4em;
+  margin-top: 0px;
+  max-width: 550px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: Arial, sans-serif;
+  overflow: hidden; /* To clip progress fill */
+}
+
+
+
+/* The progress fill layer inside the button */
+.button-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background-color: #155e5e; /* Semi-transparent white overlay */
+  z-index: 0;
+  transition: width 0.1s linear;
+}
+
+/* Text inside the button sits above the progress bar */
+.generatebutton span {
+  position: relative;
+  z-index: 1;
+}
+/* Buttons hover state */
+.button:hover {
+  border-color: #e8e8e8;
+  transform: translateY(-1px);
+}
+
+.generatebutton:hover {
+  background-color: #137373;
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  background-color: #ccc;
+}
+
+.generatebutton:disabled {
+  background-color: #ccc;
+}
+
+.textarea {
+  height: 120px;
+  resize: vertical;
+  color: white;
+}
+
+.suggestion-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: black;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
+  display: none;
+}
+
+.suggestion-box div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-box div:hover {
+  background: #D3D3D3;
+}
+
+/* Spacer at the bottom ensures cards are not cut off */
+#footerSpacer {
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.ideas-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 15px 10px;
+  overflow: visible;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.idea-box {
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.activity-image {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.button.loading {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  cursor: not-allowed !important;
+  color: #ffffff;
+}
+
+.generatebutton.loading {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  cursor: not-allowed !important;
+  color: #ffffff;
+}
+
+.idea-box:hover {
+  background-color: #e3e4e6;
+}
+
+.idea-title {
+  font-size: 25px;
+  font-weight: bold;
+  color: #003366;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    max-width: 100%;
+  }
+}
+
+
+
+
+.dropdown {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  z-index: 1000;
+  display: inline-block; /* Allow hover to work on the whole container */
+}
+
+/* Dropdown button styling */
+.dropbtn {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 12px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+/* Button hover effect */
+.dropbtn:hover {
+  background-color: white; /* Darker shade of the initial button color */
+  transform: translateY(-1px); /* Slight lift effect on hover */
+}
+
+/* Dropdown content box (hidden by default) */
+.dropdown-content {
+  visibility: hidden; /* Initially hidden */
+  opacity: 0; /* Make it invisible */
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 180px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  margin-top: 5px;
+  transition: opacity 0.3s ease, visibility 0s 0.3s; /* Smooth fade-in/out */
+}
+
+/* Show dropdown when hovering the entire dropdown container */
+.dropdown:hover .dropdown-content {
+  visibility: visible; /* Make it visible */
+  opacity: 1; /* Fully opaque */
+  transition: opacity 0.3s ease, visibility 0s 0s; /* Instant visibility change for smoother transition */
+}
+
+/* Styling for each link inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 18px;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  border-radius: 8px; /* Added border-radius to each link for consistent round edges */
+}
+
+/* Fix white line (bottom border issue) */
+.dropdown-content a:last-child {
+  border-bottom: none; /* Remove border on the last item */
+}
+
+/* Hover effect for dropdown links */
+.dropdown-content a:hover {
+  background-color: #f4f4f4;
+  color: #155e5e; /* Color change on hover */
+  border-radius: 8px; /* Ensure round corners on hover */
+}
+
+/* Focused state for accessibility */
+.dropdown-content a:focus {
+  outline: 2px solid #155e5e;
+}
+
+/* style the inputSection as its own panel */
+#inputSection {
+  background: #white;         /* darker teal to match your brand */
+  color: #fff;                 /* white text for contrast */
+        /* almost-opaque white */
+  max-width: 600px;                          /* cap the width */
+  margin: 2rem auto;                         /* centre + vertical space */
+  padding: 2rem;
+  position: relative; /* ensure this wrapper stays positioned */                             /* inner breathing room */
+  border-radius: 1rem;                       /* match your card corners */
+       /* soft drop shadow */
+  box-sizing: border-box;
+  
+}
+
+/* ensure the button fills the panel’s width */
+#inputSection .generatebutton {
+  max-width: 100%;
+}
+#inputSection textarea {
+  resize: none !important;
+}
+
+/* hide only the fields, not the button */
+#fieldsContainer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+}
+
+/* show them when expanded */
+#fieldsContainer.expanded {
+  /* big enough for your 3 inputs; bump up if needed */
+  max-height: 500px;
+  overflow: visible;
+}
+
+/* ensure your inputs still stack and have spacing */
+#fieldsContainer .input-box {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+
+#logo-container {
+  transition: transform 0.6s ease;
+}
+#logo-container.shifted {
+  transform: translateY(-0px); /* tweak vertical offset to taste */
+}
+
+#modalOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+#modalContent #modalImage {
+  width: 100%;
+  height: 180px;        /* <-- pick whatever height works best */
+  object-fit: cover;    /* crops to fill without distortion */
+  border-radius: 0.5rem;
+  cursor: default;
+  margin-bottom: 1rem;  /* space before the title/description */
+}
+
+#modalContent {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 550px;
+  height: 90%;
+  overflow-y: auto;
+  cursor: default;
+  position: relative;
+}
+
+
+/* Hide by default */
+.hidden { display: none !important; }
+
+#modalContent .description {
+  display: block !important;
+  margin-top: 1rem;    /* whatever spacing you like */
+  color: #333;         /* override any --light variable issues */
+  line-height: 1.5;
+}
+
+#copyBtn {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);      /* leave 1rem padding either side */
+  background-color: #155e5e;
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 1rem;  /* match bottom corners of modal */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  text-align: center;
+}
+
+#copyBtn:hover {
+  background-color: #137373;
+  transform: translate(-50%, -2px); /* slight lift on hover */
+}
+
+#topBar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  background: black;
+  padding: 0.10rem;
+  display: flex;
+  height: 100px;
+  justify-content: center;
+  gap: 1rem;
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  z-index: 2000;
+}
+#topBar.visible {
+  transform: translateY(0);
+}
+#topBar.hidden {
+  transform: translateY(-100%) !important;
+}
+
+/* Style the two buttons inside */
+#topBar .button {
+  background: #fff;
+  color: #155e5e;
+  border: none;
+  height: 40px; 
+  padding: 0.10rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s ease;
+}
+#topBar .button:hover {
+  background: #f0f0f0;
+}
+#section1 .section1-nav {
+  position: sticky;
+  top: 0;
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  z-index: 10;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  
+  width: 100%;
+  height: 10px;
+  font-size: 0.85rem;
+  color: black;
+  background-color: white;
+  /* if your background is dark; switch to #333 and #666 on light bg */
+}
