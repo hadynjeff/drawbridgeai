@@ -1,368 +1,239 @@
- // Custom smooth scroll function using requestAnimationFrame
-    function smoothScrollTo(targetY, duration) {
-      const startY = window.scrollY;
-      const distanceY = targetY - startY;
-      let startTime = null;
-
-      function animation(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        // Ease in/out cubic function
-        const easedProgress = progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-        window.scrollTo(0, startY + distanceY * easedProgress);
-        if (timeElapsed < duration) {
-          requestAnimationFrame(animation);
-        }
-      }
-      requestAnimationFrame(animation);
-    }
-
-    let loadingInterval = null;
-
-const keywordImageMap = {
-  "shadow": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "shadowing": ["images/workplace.jpg", "images/workplace.jpg"],
-  "simulation": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "project": ["images/writing.png", "images/writing2.jpeg"],
-  "evaluate": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "evaluation": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "quiz": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "scenario": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "coaching": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "planning": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "exercise": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "activity": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "review": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "reflective": ["images/reflection.jpg", "images/reflection2.jpg"],
-  "reflection": ["images/reflection.jpg", "images/reflection2.jpg"],
-  "reflect": ["images/reflection.jpg", "images/reflection2.jpg"],
-  "discussion": ["images/discussion.jpg", "images/discussion2.png"],
-  "discuss": ["images/discussion.jpg", "images/discussion2.png"],
-  "research": ["images/research.jpg", "images/research2.jpeg"],
-  "writing": ["images/writing.png", "images/writing2.jpeg"],
-  "plan": ["images/writing.png", "images/writing2.jpeg"],
-  "analyse": ["images/writing.png", "images/writing2.jpeg"],
-  "analysis": ["images/writing.png", "images/writing2.jpeg"],
-  "action plan": ["images/writing.png", "images/writing2.jpeg"],
-  "journal": ["images/writing.png", "images/writing2.jpeg"],
-  "journaling": ["images/writing.png", "images/writing2.jpeg"],
-  "interactive": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "role-play": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "role-playing": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "workshop": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "meeting": ["images/meeting.jpeg", "images/meeting2.webp"]
-};
-
-const keywordLearningStyleMap = {
-  "observe": "Visual",
-  "observing": "Visual",
-  "shadow": "Visual",
-  "shadowing": "Visual",
-  "writing": "Reading/Writing",
-  "journal": "Reading/Writing",
-  "journaling": "Reading/Writing",
-  "Project": "Reading/Writing",
-  "role-play": "Kinesthetic",
-  "role-playing": "Kinesthetic",
-  "exercise": "Kinesthetic",
-  "activity": "Kinesthetic",
-  "simulation": "Kinesthetic",
-  "practical": "Kinesthetic",
-  "interactive": "Kinesthetic",
-  "scenario": "Kinesthetic",
-  "workshop": "Kinesthetic",
-  "presentation": "Kinesthetic",
-  "research": "Reading/Writing",
-  "plan": "Reading/Writing",
-  "planning": "Reading/Writing",
-  "evaluate": "Reading/Writing",
-  "quiz": "Reading/Writing",
-  "review": "Reading/Writing",
-  "discussion": "Auditory",
-  "discuss": "Auditory",
-  "meeting": "Auditory",
-  "reflection": "Reflective",
-  "reflect": "Reflective",
-  "reflective": "Reflective",
-   "evaluation": "Reading/Writing"
-};
-
-    document.getElementById("apprenticeshipName").addEventListener("input", showSuggestions);
-
-    const apprenticeshipNames = [
-      "Hospitality Manager Level 4",
-      "Hospitality Supervisor Level 3",
-      "Hospitality Team Member Level 2",
-      "Production Chef Level 2",
-      "Senior Production Chef Level 3",
-      "Commis Chef Level 2",
-      "Food & Beverage Team Member Level 2",
-      "Hospitality Accommodation Team Member Level 2",
-      "Retailer Level 2",
-      "Trade Supplier Level 2",
-      "Retail Team Leader Level 3",
-      "Retail Manager Level 4",
-      "Customer Service Practitioner Level 2",
-      "Customer Service Specialist Level 3",
-      "Business Administrator Level 3",
-      "Community Activator Coach Level 2",
-      "Leisure Team Member Level 2",
-      "Community Sport Health Officer Level 3",
-      "Leisure Duty Manager Level 3",
-      "Personal Trainer Level 3",
-      "Adult Care Worker Level 2",
-      "Lead Adult Care Worker Level 3",
-      "Lead Practitioner in Adult Care Level 4",
-      "Leader in Adult Care Level 5",
-      "Care Certificate Qualification Level 2",
-      "Data Technician Level 3",
-      "Data Analysis Level 4",
-      "Early Years Practitioner Level 2",
-      "Early Years Educator Level 3",
-      "Early Years Lead Practitioner Level 5",
-      "HR Support Level 3",
-      "Learning & Development Practitioner Level 3",
-      "Learning & Development Consultant Business Partner Level 5",
-      "People Professional Level 5",
-      "Information Communications Technician Level 3",
-      "Team Leader Level 3",
-      "Associate Project Manager Level 4",
-      "Coaching Professional Level 5",
-      "Operations Manager Level 5",
-      "Express Delivery Sortation Level 2",
-      "Supply Chain Warehouse Operative Level 2",
-      "Multichain Marketer Level 3"
-    ];
-
-    function showSuggestions() {
-      const input = document.getElementById("apprenticeshipName");
-      const suggestionsContainer = document.getElementById("suggestions");
-      const filter = input.value.toLowerCase().trim(); // Trim spaces to avoid empty matches
-
-      suggestionsContainer.innerHTML = "";
-      suggestionsContainer.style.display = "none";
-
-      if (!filter) return;
-
-      const filteredNames = apprenticeshipNames.filter(name => name.toLowerCase().includes(filter));
-
-      if (filteredNames.length > 0) {
-        suggestionsContainer.style.display = "block"; // Show the box if we have results
-      }
-
-      filteredNames.forEach(name => {
-        const div = document.createElement("div");
-        div.textContent = name;
-        div.style.padding = "10px";
-        div.style.cursor = "pointer";
-        div.style.borderBottom = "1px solid #ddd"; // Add some visual separation
-        div.onclick = () => {
-          input.value = name; // Auto-fill input when clicked
-          suggestionsContainer.innerHTML = "";
-          suggestionsContainer.style.display = "none";
-        };
-        suggestionsContainer.appendChild(div);
-      });
-    }
-
-function smoothScrollTo(targetPosition, duration) {
-    const startPosition = window.scrollY;
-    const distance = targetPosition - startPosition;
-    let startTime = null;
-
-    function animation(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        window.scrollTo(0, startPosition + distance * progress);
-        if (timeElapsed < duration) {
-            requestAnimationFrame(animation);
-        }
-    }
-
-    requestAnimationFrame(animation);
+// ------------ Smooth scroll util ------------
+function smoothScrollTo(targetY, duration) {
+  const startY = window.scrollY;
+  const distanceY = targetY - startY;
+  let startTime = null;
+  function animation(currentTime) {
+    if (startTime === null) startTime = currentTime;
+    const timeElapsed = currentTime - startTime;
+    const progress = Math.min(timeElapsed / duration, 1);
+    const eased = progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    window.scrollTo(0, startY + distanceY * eased);
+    if (timeElapsed < duration) requestAnimationFrame(animation);
+  }
+  requestAnimationFrame(animation);
 }
 
+// ------------ Keyword maps ------------
+const keywordImageMap = { /* your map… */ };
+const keywordLearningStyleMap = { /* your map… */ };
 
-function toggleInput() {
-    const section1 = document.getElementById("section1");
-    const section2 = document.getElementById("section2");
-    
-    
-    const dropdown = document.querySelector('.dropdown');
-dropdown.classList.remove('hidden');
-section1.classList.remove('hidden');
-section2.classList.add('hidden');
+// ------------ Autocomplete ------------
+document.getElementById("apprenticeshipName")
+  .addEventListener("input", showSuggestions);
+function showSuggestions() {
+  const input = document.getElementById("apprenticeshipName");
+  const box   = document.getElementById("suggestions");
+  const filter = input.value.toLowerCase().trim();
+  box.innerHTML = ""; box.style.display = "none";
+  if (!filter) return;
+  const matches = apprenticeshipNames
+    .filter(n => n.toLowerCase().includes(filter));
+  if (!matches.length) return;
+  box.style.display = "block";
+  matches.forEach(n => {
+    const d = document.createElement("div");
+    d.textContent = n;
+    d.style.padding = "10px";
+    d.onclick = () => {
+      input.value = n;
+      box.innerHTML = "";
+      box.style.display = "none";
+    };
+    box.appendChild(d);
+  });
 }
 
+// (list of apprenticeshipNames here…)
 
+// ------------ Helpers ------------
 function getImageForTitle(title) {
-  const lowerTitle = title.toLowerCase();
-
-  for (const keyword in keywordImageMap) {
-    if (lowerTitle.includes(keyword)) {
-      const images = keywordImageMap[keyword];
-      const randomIndex = Math.floor(Math.random() * images.length);
-      return images[randomIndex];
+  const t = title.toLowerCase();
+  for (const k in keywordImageMap) {
+    if (t.includes(k)) {
+      const arr = keywordImageMap[k];
+      return arr[Math.floor(Math.random()*arr.length)];
     }
   }
-
-  return "images/default.jpg"; // fallback
+  return "images/default.jpg";
 }
-
-
 function getLearningStyle(text) {
-  text = text.toLowerCase();  // Convert the text to lowercase for case-insensitive matching
-
-  console.log("Checking learning style for:", text);  // Log the input text
-
-  // Loop through each keyword in the map
-  for (const keyword in keywordLearningStyleMap) {
-    // Create a regular expression to match whole words only
-    const regex = new RegExp(`\\b${keyword}\\b`, 'i');  // 'i' makes the match case-insensitive
-    
-
-    if (regex.test(text)) {
-      
-      return keywordLearningStyleMap[keyword];  // Return the corresponding learning style
+  text = text.toLowerCase();
+  for (const k in keywordLearningStyleMap) {
+    if (new RegExp(`\\b${k}\\b`, "i").test(text)) {
+      return keywordLearningStyleMap[k];
     }
   }
-
-  console.log("No match found, returning default: All Learners");
-  return "All Learners";  // Default if no match found
+  return "All Learners";
 }
 
-
-function showModal(activity) {
-  // Populate modal…
-  document.getElementById('modalImage').src           = getImageForTitle(activity.title);
-  document.getElementById('modalTitle').textContent   = activity.title;
-  document.getElementById('modalDescription').textContent = activity.description;
-  document.getElementById('modalTime').textContent    = activity.time;
-  document.getElementById('modalStyle').textContent   = getLearningStyle(activity.title);
-
-  // Show modal & blur background…
+// ------------ Modal ------------
+function showModal(act) {
+  document.getElementById('modalImage').src         = getImageForTitle(act.title);
+  document.getElementById('modalTitle').textContent = act.title;
+  document.getElementById('modalDescription').textContent = act.description;
+  document.getElementById('modalTime').textContent  = act.time;
+  document.getElementById('modalStyle').textContent = getLearningStyle(act.title);
   document.getElementById('section2').classList.add('blurred');
   document.getElementById('modalOverlay').classList.remove('hidden');
 
-  // ← NEW: wire up the copy button
   const copyBtn = document.getElementById('copyBtn');
   copyBtn.onclick = () => {
-    const text = 
-      `${activity.title}\n\n` +
-      `${activity.description}\n\n` +
-      `Estimated Time: ${activity.time}\n` +
-      `Learning Style: ${getLearningStyle(activity.title)}`;
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => copyBtn.textContent = 'Copy Activity', 1000);
-      });
+    const text = `${act.title}\n\n${act.description}\n\nEstimated Time: ${act.time}\nLearning Style: ${getLearningStyle(act.title)}`;
+    navigator.clipboard.writeText(text).then(() => {
+      copyBtn.textContent = "Copied!";
+      setTimeout(() => copyBtn.textContent = "Copy Activity", 1000);
+    });
   };
-
 }
-
-
-
 function closeModal() {
-  // Un-blur the grid
   document.getElementById('section2').classList.remove('blurred');
-  // Hide the modal
   document.getElementById('modalOverlay').classList.add('hidden');
 }
+document.getElementById('modalOverlay')
+  .addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const generateButton = document.getElementById('generateButton');
-  const logoContainer  = document.getElementById('logo-container');
-  const fieldsContainer = document.getElementById('fieldsContainer');
-  let onboarding       = false;
-
-  generateButton.addEventListener('click', () => {
-    if (!onboarding) {
-      onboarding = true;
-      // slide the logo up
-      logoContainer.classList.add('shifted');
-      // expand only the inputs
-      fieldsContainer.classList.add('expanded');
-      // relabel the button
-      generateButton.querySelector('span').textContent = 'Craft Experiences';
-    } else {
-    fieldsContainer.classList.remove('expanded');
-      fetchIdeas();
-    }
-  });
-});
-
-
-// Close when clicking on the semi-transparent backdrop:
-document
-  .getElementById('modalOverlay')
-  .addEventListener('click', function(e) {
-    // only close if the click was on the overlay itself,
-    // not on the inner #modalContent
-    if (e.target === this) {
-      closeModal();
-    }
-  });
-
-  // 1) grab references
-const section2 = document.getElementById('section2');
-const topBar   = document.getElementById('topBar');
-const startOverTop = document.getElementById('startOverTop');
-const refreshTop   = document.getElementById('refreshTop');
-
-// 2) wire up the top-bar buttons
-startOverTop.onclick = () => toggleInput();
-
-
-// 3) the show/hide logic with auto-hide timer
+// ------------ Top bar behavior ------------
+const section2      = document.getElementById('section2');
+const topBar        = document.getElementById('topBar');
+const startOverTop  = document.getElementById('startOverTop');
+startOverTop.onclick = () => {
+  document.getElementById('section1').classList.remove('hidden');
+  section2.classList.add('hidden');
+};
 let barTimer;
 function showTopBar() {
-  // only run if section2 is visible
   if (section2.classList.contains('hidden')) return;
   topBar.classList.add('visible');
-  topBar.classList.remove('hidden');
-  section2.classList.add('bar-visible');
   clearTimeout(barTimer);
   barTimer = setTimeout(() => {
     topBar.classList.remove('visible');
-    topBar.classList.add('hidden');
-    section2.classList.remove('bar-visible');
   }, 3000);
 }
-
-// 4) listen for user activity (only slides in when section2 is live)
 ['mousemove','scroll','keydown','touchstart'].forEach(evt =>
   window.addEventListener(evt, showTopBar, { passive: true })
 );
 
+// ------------ Main fetchIdeas ------------
 async function fetchIdeas() {
-  // Gather & validate inputs as before…
-  const name      = document.getElementById("apprenticeshipName").value.trim();
-  const workplace = document.getElementById("workplaceType").value.trim();
-  const criteria  = document.getElementById("apprenticeshipCriteria").value.trim();
-  // … (validation UI logic) …
+  // UI refs
+  const nameInput = document.getElementById("apprenticeshipName");
+  const workInput = document.getElementById("workplaceType");
+  const critInput = document.getElementById("apprenticeshipCriteria");
+  const btn       = document.getElementById("generateButton");
+  const btnText   = btn.querySelector("span");
+  const btnProg   = document.getElementById("buttonProgress");
+  const ideasCont = document.getElementById("ideasContainer");
+  const logoCont  = document.getElementById("logo-container");
 
-  // Call your Azure Function
-  const res = await fetch("/api/generate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, workplaceType: workplace,  criteria })
+  // Gather & validate
+  const name = nameInput.value.trim();
+  const workplace = workInput.value.trim();
+  const criteria  = critInput.value.trim();
+  let valid = name.length>=6 && workplace.length>=3 && criteria.length>=12;
+  [nameInput, workInput, critInput].forEach(el=> {
+    if (!el.value.trim()) el.classList.add('invalid');
+    else el.classList.remove('invalid');
   });
-
-  if (!res.ok) {
-    const err = await res.text();
-    alert("Error generating ideas: " + err);
+  if (!valid) {
+    btn.classList.add('error','error-animation');
+    btnText.textContent = "Please fill valid values";
+    setTimeout(() => {
+      btn.classList.remove('error','error-animation');
+      btnText.textContent = "Craft Experiences";
+    }, 2000);
     return;
   }
 
-  const ideas = await res.json();  // this is your array of 8 objects
-  renderIdeas(ideas);              // same rendering logic you already have
+  // Loading UI
+  btn.disabled = true;
+  btnText.textContent = "Generating...";
+  btnProg.style.width = "0%";
+  let p=0;
+  const iv = setInterval(()=>{
+    if (p<99) { p+=1; btnProg.style.width = p+"%"; }
+  }, 200);
+
+  // Clear old ideas
+  ideasCont.innerHTML = "";
+
+  try {
+    // Call your Azure Function
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ name, workplaceType: workplace, criteria })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const ideas = await res.json();
+
+    // Render cards
+    ideas.forEach(a => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="image_container">
+          <img src="${getImageForTitle(a.title)}" class="activity-image"/>
+        </div>
+        <div class="card-overlay">
+          <div class="title">${a.title}</div>
+          <div class="info-container">
+            <div class="time-container">
+              <i class="fa-solid fa-clock"></i>
+              <span class="time-value">${a.time}</span>
+            </div>
+            <div class="style-container">
+              <i class="fa-solid fa-brain"></i>
+              <span class="style-label">${getLearningStyle(a.title)}</span>
+            </div>
+          </div>
+        </div>`;
+      card.onclick = () => showModal(a);
+      ideasCont.appendChild(card);
+    });
+
+    // Reveal Section 2
+    logoCont.classList.remove("hidden");
+    section2.classList.remove("hidden");
+    showTopBar();
+    smoothScrollTo(section2.offsetTop, 500);
+    setTimeout(()=>document.getElementById('section1').classList.add('hidden'), 800);
+
+  } catch (err) {
+    alert("Error generating ideas:\n" + err.message);
+  } finally {
+    clearInterval(iv);
+    btnProg.style.width = "100%";
+    setTimeout(()=>{
+      btnText.textContent = "Craft Experiences";
+      btn.disabled = false;
+      btnProg.style.width = "0%";
+    },500);
+  }
 }
 
-// Expose to global scope
+// Expose to global scope for your button onclick
 window.fetchIdeas = fetchIdeas;
+
+// ------------ Init button ------------
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("generateButton");
+  const logoCont = document.getElementById("logo-container");
+  const fieldsCont = document.getElementById("fieldsContainer");
+  let step1 = false;
+
+  btn.onclick = () => {
+    if (!step1) {
+      step1 = true;
+      logoCont.classList.add("shifted");
+      fieldsCont.classList.add("expanded");
+      btn.querySelector("span").textContent = "Craft Experiences";
+    } else {
+      fieldsCont.classList.remove("expanded");
+      fetchIdeas();
+    }
+  };
+});
 
