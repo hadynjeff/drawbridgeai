@@ -340,7 +340,7 @@ function showTopBar() {
 );
 
 // Your OpenAI API key
-const API_KEY = "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";
+const API_KEY = "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";
 
   // Generic wrapper to retry on 5xx errors
   async function callOpenAI(payload, retries = 3) {
