@@ -203,7 +203,7 @@ async function fetchIdeas() {
   const name      = nameInput.value.trim();
   const workplace = workInput.value.trim();
   const criteria  = critInput.value.trim();
-  let valid = name.length>=6 && workplace.length>=3 && criteria.length>=12;
+  let valid = name.length >= 6 && workplace.length >= 3 && criteria.length >= 12;
   [nameInput, workInput, critInput].forEach(el => {
     if (!el.value.trim()) el.classList.add("invalid");
     else                  el.classList.remove("invalid");
@@ -222,34 +222,44 @@ async function fetchIdeas() {
   btn.disabled = true;
   btnText.textContent = "Generating...";
   btnProg.style.width = "0%";
-  let p=0;
+  let p = 0;
   const iv = setInterval(()=>{
-    if (p<99) { p++; btnProg.style.width = p+"%"; }
-  },200);
+    if (p < 99) {
+      p++;
+      btnProg.style.width = p + "%";
+    }
+  }, 200);
 
   ideasContainer.innerHTML = "";
 
   try {
     const response = await fetch("/api/generate", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, workplaceType: workplace, criteria })
     });
 
+    // Read the full body once
+    const raw = await response.text();
+
     if (!response.ok) {
-      let errPayload;
-      try { errPayload = await response.json(); }
-      catch { errPayload = await response.text(); }
+      let err;
+      try {
+        err = JSON.parse(raw);
+      } catch {
+        err = raw;
+      }
       alert(
         "Error generating ideas:\n" +
-        (typeof errPayload === "string"
-          ? errPayload
-          : JSON.stringify(errPayload,null,2))
+        (typeof err === "string" ? err : JSON.stringify(err, null, 2))
       );
       return;
     }
 
-    const ideas = await response.json();
+    // Parse successful JSON
+    const ideas = JSON.parse(raw);
+
+    // Render each card
     ideas.forEach(a => {
       const card = document.createElement("div");
       card.className = "card";
@@ -274,27 +284,27 @@ async function fetchIdeas() {
       ideasContainer.appendChild(card);
     });
 
-    // Show results
+    // Reveal section2
     logoContainer.classList.remove("hidden");
-    section2.classList.remove("hidden");
-    smoothScrollTo(section2.offsetTop,500);
-    setTimeout(()=>section1.classList.add("hidden"),800);
+    document.getElementById("section2").classList.remove("hidden");
+    smoothScrollTo(document.getElementById("section2").offsetTop, 500);
+    setTimeout(() => section1.classList.add("hidden"), 800);
 
   } catch (err) {
     alert("Unexpected error:\n" + err.message);
   } finally {
     clearInterval(iv);
     btnProg.style.width = "100%";
-    setTimeout(()=>{
+    setTimeout(() => {
       btnText.textContent = "Craft Experiences";
       btn.disabled = false;
       btnProg.style.width = "0%";
-    },500);
+    }, 500);
   }
 }
 
-// Expose globally
 window.fetchIdeas = fetchIdeas;
+
 
 // ------------ Initialize button behavior ------------
 document.addEventListener("DOMContentLoaded",()=>{
