@@ -118,58 +118,84 @@ function showTopBar() {
 
 // ------------ Main fetchIdeas ------------
 async function fetchIdeas() {
-  // UI refs
-  const nameInput = document.getElementById("apprenticeshipName");
-  const workInput = document.getElementById("workplaceType");
-  const critInput = document.getElementById("apprenticeshipCriteria");
-  const btn       = document.getElementById("generateButton");
-  const btnText   = btn.querySelector("span");
-  const btnProg   = document.getElementById("buttonProgress");
-  const ideasCont = document.getElementById("ideasContainer");
-  const logoCont  = document.getElementById("logo-container");
+  // UI references
+  const nameInput       = document.getElementById("apprenticeshipName");
+  const workInput       = document.getElementById("workplaceType");
+  const critInput       = document.getElementById("apprenticeshipCriteria");
+  const btn             = document.getElementById("generateButton");
+  const btnText         = btn.querySelector("span");
+  const btnProg         = document.getElementById("buttonProgress");
+  const ideasContainer  = document.getElementById("ideasContainer");
+  const logoContainer   = document.getElementById("logo-container");
+  const section1        = document.getElementById("section1");
+  const section2        = document.getElementById("section2");
 
-  // Gather & validate
-  const name = nameInput.value.trim();
-  const workplace = workInput.value.trim();
-  const criteria  = critInput.value.trim();
-  let valid = name.length>=6 && workplace.length>=3 && criteria.length>=12;
-  [nameInput, workInput, critInput].forEach(el=> {
-    if (!el.value.trim()) el.classList.add('invalid');
-    else el.classList.remove('invalid');
+  // Gather & validate inputs
+  const name          = nameInput.value.trim();
+  const workplace     = workInput.value.trim();
+  const criteria      = critInput.value.trim();
+
+  let valid = name.length >= 6
+           && workplace.length >= 3
+           && criteria.length >= 12;
+  [nameInput, workInput, critInput].forEach(el => {
+    if (!el.value.trim()) el.classList.add("invalid");
+    else                  el.classList.remove("invalid");
   });
   if (!valid) {
-    btn.classList.add('error','error-animation');
-    btnText.textContent = "Please fill valid values";
+    btn.classList.add("error","error-animation");
+    btnText.textContent = "Please enter valid values";
     setTimeout(() => {
-      btn.classList.remove('error','error-animation');
+      btn.classList.remove("error","error-animation");
       btnText.textContent = "Craft Experiences";
     }, 2000);
     return;
   }
 
-  // Loading UI
+  // Enter loading state
   btn.disabled = true;
   btnText.textContent = "Generating...";
   btnProg.style.width = "0%";
-  let p=0;
-  const iv = setInterval(()=>{
-    if (p<99) { p+=1; btnProg.style.width = p+"%"; }
+  let progress = 0;
+  const interval = setInterval(() => {
+    if (progress < 99) {
+      progress++;
+      btnProg.style.width = `${progress}%`;
+    }
   }, 200);
 
-  // Clear old ideas
-  ideasCont.innerHTML = "";
+  // Clear previous ideas
+  ideasContainer.innerHTML = "";
 
   try {
-    // Call your Azure Function
-    const res = await fetch("/api/generate", {
+    // Call Azure Function
+    const response = await fetch("/api/generate", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, workplaceType: workplace, criteria })
     });
-    if (!res.ok) throw new Error(await res.text());
-    const ideas = await res.json();
 
-    // Render cards
+    if (!response.ok) {
+      // Try JSON first, otherwise plain text
+      let errorPayload;
+      try {
+        errorPayload = await response.json();
+      } catch {
+        errorPayload = await response.text();
+      }
+      alert(
+        "Error generating ideas:\n" +
+        (typeof errorPayload === "string"
+          ? errorPayload
+          : JSON.stringify(errorPayload, null, 2))
+      );
+      return;
+    }
+
+    // Parse the returned ideas array
+    const ideas = await response.json();
+
+    // Render each idea card
     ideas.forEach(a => {
       const card = document.createElement("div");
       card.className = "card";
@@ -191,49 +217,30 @@ async function fetchIdeas() {
           </div>
         </div>`;
       card.onclick = () => showModal(a);
-      ideasCont.appendChild(card);
+      ideasContainer.appendChild(card);
     });
 
-    // Reveal Section 2
-    logoCont.classList.remove("hidden");
+    // Reveal section2 & hide section1
+    logoContainer.classList.remove("hidden");
     section2.classList.remove("hidden");
-    showTopBar();
     smoothScrollTo(section2.offsetTop, 500);
-    setTimeout(()=>document.getElementById('section1').classList.add('hidden'), 800);
+    setTimeout(() => section1.classList.add("hidden"), 800);
 
   } catch (err) {
-    alert("Error generating ideas:\n" + err.message);
+    // Network or unexpected error
+    alert("Unexpected error:\n" + err.message);
   } finally {
-    clearInterval(iv);
+    // Reset button state
+    clearInterval(interval);
     btnProg.style.width = "100%";
-    setTimeout(()=>{
+    setTimeout(() => {
       btnText.textContent = "Craft Experiences";
       btn.disabled = false;
       btnProg.style.width = "0%";
-    },500);
+    }, 500);
   }
 }
 
-// Expose to global scope for your button onclick
+// Expose globally if you use window.fetchIdeas elsewhere
 window.fetchIdeas = fetchIdeas;
-
-// ------------ Init button ------------
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("generateButton");
-  const logoCont = document.getElementById("logo-container");
-  const fieldsCont = document.getElementById("fieldsContainer");
-  let step1 = false;
-
-  btn.onclick = () => {
-    if (!step1) {
-      step1 = true;
-      logoCont.classList.add("shifted");
-      fieldsCont.classList.add("expanded");
-      btn.querySelector("span").textContent = "Craft Experiences";
-    } else {
-      fieldsCont.classList.remove("expanded");
-      fetchIdeas();
-    }
-  };
-});
 
