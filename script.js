@@ -287,6 +287,7 @@ async function fetchIdeas() {
 
     // Reveal section2
     dropdown.classList.add('hidden');
+    document.getElementById('topBar').classList.add('hidden');
     logoContainer.classList.remove("hidden");
     document.getElementById("section2").classList.remove("hidden");
     smoothScrollTo(document.getElementById("section2").offsetTop, 500);
