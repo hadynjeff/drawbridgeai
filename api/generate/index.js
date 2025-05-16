@@ -55,7 +55,7 @@ Each activity must:
 4. Be overseen by a mentor or manager with accountability/feedback.
 5. Use British English spelling ONLY.
 6. Not include attendance or participation in webinars, seminars or workshops.
-7. Not mention the impact on the learner.
+7. Not mention the impact the activity will have on the learner.
 8. Be compliant with ESFA guidelines regarding off-the-job training.
 
 Return **only** a valid JSON array of 8 objects:
