@@ -238,10 +238,10 @@ async function fetchIdeas() {
 
   // rotating progress messages
   const progressMessages = [
-    "Generating ideas\u2026",
-    "Still working\u2026",
-    "Almost there\u2026",
-    "Finishing up\u2026"
+    "Clarifying Intent\u2026",
+    "Shaping Implementation\u2026",
+    "Evaluating Impact\u2026",
+    "Finalising\u2026"
   ];
   let msgIndex = 0;
   btnText.textContent = progressMessages[msgIndex];
