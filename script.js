@@ -3,6 +3,7 @@ function smoothScrollTo(targetY, duration) {
   const startY = window.scrollY;
   const distanceY = targetY - startY;
   let startTime = null;
+
   function animation(currentTime) {
     if (startTime === null) startTime = currentTime;
     const timeElapsed = currentTime - startTime;
@@ -16,93 +17,90 @@ function smoothScrollTo(targetY, duration) {
   requestAnimationFrame(animation);
 }
 
+// ------------ Globals ------------
+let progressInterval = null;
+
 // ------------ Keyword → Image map ------------
 const keywordImageMap = {
-  "shadow": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "shadowing": ["images/workplace.jpg", "images/workplace.jpg"],
-  "simulation": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "project": ["images/writing.png", "images/writing2.jpeg"],
-  "evaluate": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "evaluation": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "quiz": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "scenario": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "coaching": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "planning": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "exercise": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "activity": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "review": ["images/workplace.jpg", "images/workplace2.jpg"],
-  "reflective": ["images/reflection.jpg", "images/reflection2.jpg"],
-  "reflection": ["images/reflection.jpg", "images/reflection2.jpg"],
-  "reflect": ["images/reflection.jpg", "images/reflection2.jpg"],
-  "discussion": ["images/discussion.jpg", "images/discussion2.png"],
-  "discuss": ["images/discussion.jpg", "images/discussion2.png"],
-  "research": ["images/research.jpg", "images/research2.jpeg"],
-  "writing": ["images/writing.png", "images/writing2.jpeg"],
-  "plan": ["images/writing.png", "images/writing2.jpeg"],
-  "analyse": ["images/writing.png", "images/writing2.jpeg"],
-  "analysis": ["images/writing.png", "images/writing2.jpeg"],
-  "action plan": ["images/writing.png", "images/writing2.jpeg"],
-  "journal": ["images/writing.png", "images/writing2.jpeg"],
-  "journaling": ["images/writing.png", "images/writing2.jpeg"],
-  "interactive": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "role-play": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "role-playing": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "workshop": ["images/interactive.jpg", "images/interactive2.jpg"],
-  "meeting": ["images/meeting.jpeg", "images/meeting2.webp"]
+  shadow: ["images/workplace.jpg", "images/workplace2.jpg"],
+  shadowing: ["images/workplace.jpg", "images/workplace.jpg"],
+  simulation: ["images/workplace.jpg", "images/workplace2.jpg"],
+  project: ["images/writing.png", "images/writing2.jpeg"],
+  evaluate: ["images/workplace.jpg", "images/workplace2.jpg"],
+  evaluation: ["images/workplace.jpg", "images/workplace2.jpg"],
+  quiz: ["images/workplace.jpg", "images/workplace2.jpg"],
+  scenario: ["images/workplace.jpg", "images/workplace2.jpg"],
+  coaching: ["images/workplace.jpg", "images/workplace2.jpg"],
+  planning: ["images/workplace.jpg", "images/workplace2.jpg"],
+  exercise: ["images/workplace.jpg", "images/workplace2.jpg"],
+  activity: ["images/workplace.jpg", "images/workplace2.jpg"],
+  review: ["images/workplace.jpg", "images/workplace2.jpg"],
+  reflective: ["images/reflection.jpg", "images/reflection2.jpg"],
+  reflection: ["images/reflection.jpg", "images/reflection2.jpg"],
+  reflect: ["images/reflection.jpg", "images/reflection2.jpg"],
+  discussion: ["images/discussion.jpg", "images/discussion2.png"],
+  discuss: ["images/discussion.jpg", "images/discussion2.png"],
+  research: ["images/research.jpg", "images/research2.jpeg"],
+  writing: ["images/writing.png", "images/writing2.jpeg"],
+  plan: ["images/writing.png", "images/writing2.jpeg"],
+  analyse: ["images/writing.png", "images/writing2.jpeg"],
+  analysis: ["images/writing.png", "images/writing2.jpeg"],
+  'action plan': ["images/writing.png", "images/writing2.jpeg"],
+  journal: ["images/writing.png", "images/writing2.jpeg"],
+  journaling: ["images/writing.png", "images/writing2.jpeg"],
+  interactive: ["images/interactive.jpg", "images/interactive2.jpg"],
+  'role-play': ["images/interactive.jpg", "images/interactive2.jpg"],
+  'role-playing': ["images/interactive.jpg", "images/interactive2.jpg"],
+  workshop: ["images/interactive.jpg", "images/interactive2.jpg"],
+  meeting: ["images/meeting.jpeg", "images/meeting2.webp"]
 };
 
 // ------------ Keyword → Learning style map ------------
 const keywordLearningStyleMap = {
-  "observe": "Visual",       "observing": "Visual",
-  "shadow": "Visual",        "shadowing": "Visual",
-  "writing": "Reading/Writing", "journal": "Reading/Writing",
-  "journaling": "Reading/Writing", "project": "Reading/Writing",
-  "role-play": "Kinesthetic", "role-playing": "Kinesthetic",
-  "exercise": "Kinesthetic",    "activity": "Kinesthetic",
-  "simulation": "Kinesthetic",  "practical": "Kinesthetic",
-  "interactive": "Kinesthetic", "scenario": "Kinesthetic",
-  "workshop": "Kinesthetic",    "presentation": "Kinesthetic",
-  "research": "Reading/Writing","plan": "Reading/Writing",
-  "planning": "Reading/Writing","evaluate": "Reading/Writing",
-  "quiz": "Reading/Writing",     "review": "Reading/Writing",
-  "discussion": "Auditory",      "discuss": "Auditory",
-  "meeting": "Auditory",         "reflection": "Reflective",
-  "reflect": "Reflective",       "reflective": "Reflective",
-  "evaluation": "Reading/Writing"
+  observe: "Visual",
+  observing: "Visual",
+  shadow: "Visual",
+  shadowing: "Visual",
+  writing: "Reading/Writing",
+  journal: "Reading/Writing",
+  journaling: "Reading/Writing",
+  project: "Reading/Writing",
+  'role-play': "Kinesthetic",
+  'role-playing': "Kinesthetic",
+  exercise: "Kinesthetic",
+  activity: "Kinesthetic",
+  simulation: "Kinesthetic",
+  practical: "Kinesthetic",
+  interactive: "Kinesthetic",
+  scenario: "Kinesthetic",
+  workshop: "Kinesthetic",
+  presentation: "Kinesthetic",
+  research: "Reading/Writing",
+  plan: "Reading/Writing",
+  planning: "Reading/Writing",
+  evaluate: "Reading/Writing",
+  quiz: "Reading/Writing",
+  review: "Reading/Writing",
+  discussion: "Auditory",
+  discuss: "Auditory",
+  meeting: "Auditory",
+  reflection: "Reflective",
+  reflect: "Reflective",
+  reflective: "Reflective",
+  evaluation: "Reading/Writing"
 };
-
-// ------------ Apprenticeship name suggestions ------------
-const apprenticeshipNames = [
-  "Hospitality Manager Level 4","Hospitality Supervisor Level 3",
-  "Hospitality Team Member Level 2","Production Chef Level 2",
-  "Senior Production Chef Level 3","Commis Chef Level 2",
-  "Food & Beverage Team Member Level 2","Hospitality Accommodation Team Member Level 2",
-  "Retailer Level 2","Trade Supplier Level 2","Retail Team Leader Level 3",
-  "Retail Manager Level 4","Customer Service Practitioner Level 2",
-  "Customer Service Specialist Level 3","Business Administrator Level 3",
-  "Community Activator Coach Level 2","Leisure Team Member Level 2",
-  "Community Sport Health Officer Level 3","Leisure Duty Manager Level 3",
-  "Personal Trainer Level 3","Adult Care Worker Level 2",
-  "Lead Adult Care Worker Level 3","Lead Practitioner in Adult Care Level 4",
-  "Leader in Adult Care Level 5","Care Certificate Qualification Level 2",
-  "Data Technician Level 3","Data Analysis Level 4","Early Years Practitioner Level 2",
-  "Early Years Educator Level 3","Early Years Lead Practitioner Level 5",
-  "HR Support Level 3","Learning & Development Practitioner Level 3",
-  "Learning & Development Consultant Business Partner Level 5",
-  "People Professional Level 5","Information Communications Technician Level 3",
-  "Team Leader Level 3","Associate Project Manager Level 4",
-  "Coaching Professional Level 5","Operations Manager Level 5",
-  "Express Delivery Sortation Level 2","Supply Chain Warehouse Operative Level 2",
-  "Multichain Marketer Level 3"
-];
 
 // ------------ Autocomplete suggestions ------------
 document.getElementById("apprenticeshipName").addEventListener("input", showSuggestions);
+const apprenticeshipNames = [
+  /* ... list of names ... */
+];
 function showSuggestions() {
   const input = document.getElementById("apprenticeshipName");
   const box   = document.getElementById("suggestions");
   const filter = input.value.toLowerCase().trim();
-  box.innerHTML = ""; box.style.display = "none";
+  box.innerHTML = "";
+  box.style.display = "none";
   if (!filter) return;
   const matches = apprenticeshipNames.filter(n => n.toLowerCase().includes(filter));
   if (!matches.length) return;
@@ -112,6 +110,7 @@ function showSuggestions() {
     d.textContent = n;
     d.style.padding = "10px";
     d.style.cursor  = "pointer";
+    d.style.borderBottom = "1px solid #ddd";
     d.onclick = () => {
       input.value = n;
       box.innerHTML = "";
@@ -119,6 +118,13 @@ function showSuggestions() {
     };
     box.appendChild(d);
   });
+}
+
+// ------------ UI toggles ------------
+function toggleInput() {
+  document.querySelector('.dropdown').classList.remove('hidden');
+  document.getElementById('section1').classList.remove('hidden');
+  document.getElementById('section2').classList.add('hidden');
 }
 
 // ------------ Helpers ------------
@@ -135,7 +141,7 @@ function getImageForTitle(title) {
 function getLearningStyle(text) {
   text = text.toLowerCase();
   for (const k in keywordLearningStyleMap) {
-    if (new RegExp(`\\b${k}\\b`, "i").test(text)) {
+    if (new RegExp(`\\b${k}\\b`,`i`).test(text)) {
       return keywordLearningStyleMap[k];
     }
   }
@@ -144,19 +150,19 @@ function getLearningStyle(text) {
 
 // ------------ Modal logic ------------
 function showModal(act) {
-  document.getElementById('modalImage').src           = getImageForTitle(act.title);
-  document.getElementById('modalTitle').textContent   = act.title;
+  document.getElementById('modalImage').src         = getImageForTitle(act.title);
+  document.getElementById('modalTitle').textContent = act.title;
   document.getElementById('modalDescription').textContent = act.description;
-  document.getElementById('modalTime').textContent    = act.time;
-  document.getElementById('modalStyle').textContent   = getLearningStyle(act.title);
+  document.getElementById('modalTime').textContent  = act.time;
+  document.getElementById('modalStyle').textContent = getLearningStyle(act.title);
   document.getElementById('section2').classList.add('blurred');
   document.getElementById('modalOverlay').classList.remove('hidden');
-  document.getElementById('copyBtn').onclick = () => {
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.onclick = () => {
     const text = `${act.title}\n\n${act.description}\n\nEstimated Time: ${act.time}\nLearning Style: ${getLearningStyle(act.title)}`;
     navigator.clipboard.writeText(text).then(() => {
-      const btn = document.getElementById('copyBtn');
-      btn.textContent = "Copied!";
-      setTimeout(()=>btn.textContent="Copy Activity",1000);
+      copyBtn.textContent = "Copied!";
+      setTimeout(()=>copyBtn.textContent="Copy Activity",1000);
     });
   };
 }
@@ -164,24 +170,27 @@ function closeModal() {
   document.getElementById('section2').classList.remove('blurred');
   document.getElementById('modalOverlay').classList.add('hidden');
 }
-document.getElementById('modalOverlay').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target===e.currentTarget) closeModal(); });
 
 // ------------ Top-bar show/hide ------------
 const section2     = document.getElementById('section2');
 const topBar       = document.getElementById('topBar');
 const startOverTop = document.getElementById('startOverTop');
-startOverTop.onclick = () => {
-  document.getElementById('section1').classList.remove('hidden');
-  section2.classList.add('hidden');
-};
+const refreshTop   = document.getElementById('refreshTop');
+startOverTop.onclick = () => toggleInput();
+refreshTop.onclick   = () => fetchIdeas();
 let barTimer;
 function showTopBar() {
   if (section2.classList.contains('hidden')) return;
   topBar.classList.add('visible');
+  topBar.classList.remove('hidden');
+  section2.classList.add('bar-visible');
   clearTimeout(barTimer);
-  barTimer = setTimeout(() => topBar.classList.remove('visible'), 3000);
+  barTimer = setTimeout(() => {
+    topBar.classList.remove('visible');
+    topBar.classList.add('hidden');
+    section2.classList.remove('bar-visible');
+  }, 3000);
 }
 ['mousemove','scroll','keydown','touchstart'].forEach(evt =>
   window.addEventListener(evt, showTopBar, { passive: true })
@@ -189,81 +198,67 @@ function showTopBar() {
 
 // ------------ Main generation function ------------
 async function fetchIdeas() {
-  const nameInput      = document.getElementById("apprenticeshipName");
-  const workInput      = document.getElementById("workplaceType");
-  const critInput      = document.getElementById("apprenticeshipCriteria");
   const btn            = document.getElementById("generateButton");
   const btnText        = btn.querySelector("span");
   const btnProg        = document.getElementById("buttonProgress");
   const ideasContainer = document.getElementById("ideasContainer");
   const logoContainer  = document.getElementById("logo-container");
-  const section1       = document.getElementById("section1");
-  const dropdown = document.querySelector('.dropdown');
+  const dropdown       = document.querySelector('.dropdown');
+  const section1       = document.getElementById('section1');
 
   // Gather & validate
-  const name      = nameInput.value.trim();
-  const workplace = workInput.value.trim();
-  const criteria  = critInput.value.trim();
-  let valid = name.length >= 6 && workplace.length >= 3 && criteria.length >= 12;
-  [nameInput, workInput, critInput].forEach(el => {
-    if (!el.value.trim()) el.classList.add("invalid");
-    else                  el.classList.remove("invalid");
-  });
+  const name      = document.getElementById("apprenticeshipName").value.trim();
+  const workplace = document.getElementById("workplaceType").value.trim();
+  const criteria  = document.getElementById("apprenticeshipCriteria").value.trim();
+  let valid = true;
+  [{field:name,id:"apprenticeshipName"},{field:workplace,id:"workplaceType"},{field:criteria,id:"apprenticeshipCriteria"}]
+    .forEach(({field,id}) => {
+      const el = document.getElementById(id);
+      if (!field || (id==='apprenticeshipCriteria'&&criteria.length<12) || (id==='apprenticeshipName'&&name.length<6) || (id==='workplaceType'&&workplace.length<3)) {
+        valid = false;
+        el.classList.add('invalid');
+      } else el.classList.remove('invalid');
+    });
   if (!valid) {
     btn.classList.add("error","error-animation");
     btnText.textContent = "Please enter valid values";
-    setTimeout(()=>{
-      btn.classList.remove("error","error-animation");
-      btnText.textContent = "Craft Experiences";
-    },2000);
+    setTimeout(()=>{btn.classList.remove("error","error-animation"); btnText.textContent="Craft Experiences";},2000);
     return;
   }
 
   // Loading UI
-   button.disabled = true;
-    buttonText.textContent = "Initialising";
-    buttonProgress.style.width = "0%";
-    clearInterval(progressInterval);
-    progressInterval = setInterval(() => {
-      if (progress < 99) {
-        progress++;
-        buttonProgress.style.width = `${progress}%`;
-        if (progress === 10) buttonText.textContent = "Clarifying Intent";
-        else if (progress === 40) buttonText.textContent = "Shaping Implementation";
-        else if (progress === 70) buttonText.textContent = "Evaluating Impact";
-      }
-    }, 270);
-
+  btn.disabled = true;
+  btnText.textContent = "Initialising";
+  btnProg.style.width = "0%";
+  clearInterval(progressInterval);
+  let progress=0;
+  progressInterval = setInterval(() => {
+    if (progress<99) {
+      progress++;
+      btnProg.style.width = `${progress}%`;
+      if (progress===10) btnText.textContent="Clarifying Intent";
+      else if (progress===40) btnText.textContent="Shaping Implementation";
+      else if (progress===70) btnText.textContent="Evaluating Impact";
+    }
+  },270);
   ideasContainer.innerHTML = "";
 
   try {
     const response = await fetch("/api/generate", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, workplaceType: workplace, criteria })
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({name,workplaceType:workplace,criteria})
     });
-
-    // Read the full body once
     const raw = await response.text();
-
     if (!response.ok) {
       let err;
-      try {
-        err = JSON.parse(raw);
-      } catch {
-        err = raw;
-      }
-      alert(
-        "Error generating ideas:\n" +
-        (typeof err === "string" ? err : JSON.stringify(err, null, 2))
-      );
+      try { err = JSON.parse(raw); }
+      catch { err = raw; }
+      alert("Error generating ideas:\n" + (typeof err==="string"?err:JSON.stringify(err,2)));
       return;
     }
-
-    // Parse successful JSON
     const ideas = JSON.parse(raw);
-
-    // Render each card
+    ideasContainer.innerHTML = "";
     ideas.forEach(a => {
       const card = document.createElement("div");
       card.className = "card";
@@ -274,17 +269,15 @@ async function fetchIdeas() {
         <div class="card-overlay">
           <div class="title">${a.title}</div>
           <div class="info-container">
-            <div class="time-container">
-              <i class="fa-solid fa-clock"></i>
+            <div class="time-container"><i class="fa-solid fa-clock"></i>
               <span class="time-value">${a.time}</span>
             </div>
-            <div class="style-container">
-              <i class="fa-solid fa-brain"></i>
+            <div class="style-container"><i class="fa-solid fa-brain"></i>
               <span class="style-label">${getLearningStyle(a.title)}</span>
             </div>
           </div>
         </div>`;
-      card.onclick = () => showModal(a);
+      card.onclick = ()=>showModal(a);
       ideasContainer.appendChild(card);
     });
 
@@ -292,40 +285,33 @@ async function fetchIdeas() {
     dropdown.classList.add('hidden');
     document.getElementById('topBar').classList.add('hidden');
     logoContainer.classList.remove("hidden");
-    document.getElementById("section2").classList.remove("hidden");
-    smoothScrollTo(document.getElementById("section2").offsetTop, 500);
-    setTimeout(() => section1.classList.add("hidden"), 800);
-
+    section2.classList.remove('hidden');
+    smoothScrollTo(section2.offsetTop,500);
+    setTimeout(()=>section1.classList.add('hidden'),800);
   } catch (err) {
-    alert("Unexpected error:\n" + err.message);
+    alert("Unexpected error:\n"+err.message);
   } finally {
-    clearInterval(iv);
+    clearInterval(progressInterval);
     btnProg.style.width = "100%";
-    setTimeout(() => {
-      btnText.textContent = "Craft Experiences";
-      btn.disabled = false;
-      btnProg.style.width = "0%";
-    }, 500);
+    setTimeout(()=>{btnText.textContent="Craft Experiences"; btn.disabled=false; btnProg.style.width="0%";},500);
   }
 }
-
 window.fetchIdeas = fetchIdeas;
-
 
 // ------------ Initialize button behavior ------------
 document.addEventListener("DOMContentLoaded",()=>{
-  const btn          = document.getElementById("generateButton");
-  const logoCont     = document.getElementById("logo-container");
-  const fieldsCont   = document.getElementById("fieldsContainer");
+  const btn          = document.getElementById('generateButton');
+  const logoCont     = document.getElementById('logo-container');
+  const fieldsCont   = document.getElementById('fieldsContainer');
   let step1 = false;
-  btn.onclick = () => {
+  btn.onclick = ()=>{
     if (!step1) {
-      step1 = true;
-      logoCont.classList.add("shifted");
-      fieldsCont.classList.add("expanded");
-      btn.querySelector("span").textContent = "Craft Experiences";
+      step1=true;
+      logoCont.classList.add('shifted');
+      fieldsCont.classList.add('expanded');
+      btn.querySelector('span').textContent='Craft Experiences';
     } else {
-      fieldsCont.classList.remove("expanded");
+      fieldsCont.classList.remove('expanded');
       fetchIdeas();
     }
   };
