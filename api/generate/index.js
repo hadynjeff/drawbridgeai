@@ -26,19 +26,47 @@ module.exports = async function (context, req) {
   }
 
   const openai = new OpenAI({ apiKey: key });
-  const systemContent = `
-You are tasked with generating 8 off-the-job training activities that are fully ESFA-compliant.
+  const systemContent = `You are tasked with generating 8 off-the-job training activities that are fully ESFA-compliant for a UK apprentice.
 
 Apprenticeship standard: ${name}
-Workplace type: ${workplaceType}
-Learning focus/criteria: ${criteria}
+Workplace type: ${workplace}
+Learning focus/criteria: ${criteria}.
 
-Return a JSON array of 8 objects:
+Activities must fall into one of the following categories:
+- Shadowing
+- Research & Presentation Tasks
+- Simulation or Role-Play
+- Coaching or Mentoring Session with mentor/manager
+- Projects
+- Discussion
+- Reflective Learning Activities
+- Practical Skills Development (outside usual day-to-day tasks)
+- Workplace secondment/rotation
+- Independant Study
+- Technical Training
+
+
+Each activity must:
+1. Include a rich, detailed, step-by-step description (minimum 110 words, up to 150 words) with concrete examples and actionable guidance on what they will do.
+2. Use clear, instructional language directed at the learner.
+3. Align with the specific KSB: (${criteria}).
+4. Be overseen by a mentor or manager, and theres accountability or feedback involved.
+5. Use British English spelling ONLY.
+6. Not include the attendance or participation in webinars, seminars or workshops.
+7. Ensure the description doesn't include what the impact of the activity will be on the learner.
+8. Be compliant with ESFA guidlines regarding off-the-job training.
+
+Return a valid JSON array of 8 objects:
 [
-  { "title": "...", "description": "...", "time": "X hours" },
+  {"title":"Short summary (≤100 chars)","description":"Detailed, robust description"," time":"estimated time to complete the activity in X hours"},
   …
-]
-`.trim();
+]` },
+          { role: "user", content:
+`Standard: ${name}
+Workplace: ${workplace}
+KSB: ${criteria}
+
+Return only the JSON array of 8 items.`.trim();
 
   try {
     const resp = await openai.chat.completions.create({
