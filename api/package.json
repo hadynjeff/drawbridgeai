@@ -1,7 +1,8 @@
 {
   "name": "drawbridgeai-functions",
   "version": "1.0.0",
-  "dependencies": {
-    "openai": "^4.10.0"
-  }
+  "scripts": {
+    "build": "echo 'no build needed'"
+  },
+  ...
 }
