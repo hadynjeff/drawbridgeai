@@ -23,6 +23,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: drawbridgewebuk  # 👈 use your actual Web App name
+          app-name: drawbridgewebuk  # Replace with your exact Azure Web App name
+          slot-name: 'production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: site.zip
