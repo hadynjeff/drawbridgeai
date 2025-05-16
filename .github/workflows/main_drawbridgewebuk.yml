@@ -23,7 +23,8 @@ jobs:
           mkdir site
           cp index.html script.js style.css -t site/
           cp -r images site/images
-          zip -r site.zip site
+          cd site
+          zip -r ../site.zip .
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
