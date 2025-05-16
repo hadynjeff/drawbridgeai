@@ -37,16 +37,15 @@ Learning focus/criteria: ${criteria}.
 
 Activities must fall into one of the following categories:
 - Shadowing
-- Research & Presentation Tasks
+- Research & Presentation Task
 - Simulation or Role-Play
 - Coaching or Mentoring Session with mentor/manager
-- Projects
+- Project
 - Discussion
-- Reflective Learning Activities
-- Practical Skills Development (outside usual day-to-day tasks)
+- Reflective Activity
 - Workplace secondment/rotation
 - Independent Study
-- Technical Training
+- Technical Training (Outside of day to day duties of a ${name}.
 
 Each activity must:
 1. Include a rich, detailed, step-by-step description (minimum 110 words, up to 150 words) with concrete examples and actionable guidance on what they will do.
@@ -57,7 +56,7 @@ Each activity must:
 6. Not include the attendance or participation in webinars, seminars or workshops.
 7. Ensure the description doesn't include what the impact of the activity will be on the learner.
 8. Be compliant with ESFA guidlines regarding off-the-job training.
-9. Have an estimated time which is a realistic amount of time that can be claimed as off-the-job training for that particular activity.
+9. Ensure the estimated time is realistic and reflective of the activity.
 
 Return **only** a valid JSON array of 8 objects:
 [
