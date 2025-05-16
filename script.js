@@ -235,15 +235,32 @@ async function fetchIdeas() {
 
   // Loading UI
   btn.disabled = true;
-  btnText.textContent = "Generating...";
+
+  // ← NEW: rotating progress messages
+  const progressMessages = [
+    "Generating ideas\u2026",
+    "Still working\u2026",
+    "Almost there\u2026",
+    "Finishing up\u2026"
+  ];
+  let msgIndex = 0;
+  btnText.textContent = progressMessages[msgIndex];
+
+  // ← EXISTING: progress‐bar animation
   btnProg.style.width = "0%";
   let p = 0;
-  const iv = setInterval(() => {
+  const progressInterval = setInterval(() => {
     if (p < 99) {
       p++;
       btnProg.style.width = p + "%";
     }
   }, 200);
+
+  // ← NEW: swap message every 8 seconds
+  const textInterval = setInterval(() => {
+    msgIndex = (msgIndex + 1) % progressMessages.length;
+    btnText.textContent = progressMessages[msgIndex];
+  }, 8000);
 
   ideasContainer.innerHTML = "";
 
@@ -251,30 +268,24 @@ async function fetchIdeas() {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, workplaceType: workplace, criteria })
+      body: JSON.stringify({
+        name,
+        workplaceType: workplace,
+        criteria
+      })
     });
 
-    // Read the full body once
     const raw = await response.text();
-
     if (!response.ok) {
       let err;
-      try {
-        err = JSON.parse(raw);
-      } catch {
-        err = raw;
-      }
-      alert(
-        "Error generating ideas:\n" +
-        (typeof err === "string" ? err : JSON.stringify(err, null, 2))
-      );
+      try { err = JSON.parse(raw); }
+      catch { err = raw; }
+      alert("Error generating ideas:\n" +
+            (typeof err === "string" ? err : JSON.stringify(err, null, 2)));
       return;
     }
 
-    // Parse successful JSON
     const ideas = JSON.parse(raw);
-
-    // Render each card
     ideas.forEach(a => {
       const card = document.createElement("div");
       card.className = "card";
@@ -301,7 +312,7 @@ async function fetchIdeas() {
 
     // Reveal section2
     dropdown.classList.add('hidden');
-    document.getElementById('topBar').classList.add('hidden');
+    topBar.classList.add('hidden');
     logoContainer.classList.remove("hidden");
     document.getElementById("section2").classList.remove("hidden");
     smoothScrollTo(document.getElementById("section2").offsetTop, 500);
@@ -310,7 +321,10 @@ async function fetchIdeas() {
   } catch (err) {
     alert("Unexpected error:\n" + err.message);
   } finally {
-    clearInterval(iv);
+    // ← clear both intervals
+    clearInterval(progressInterval);
+    clearInterval(textInterval);
+
     btnProg.style.width = "100%";
     setTimeout(() => {
       btnText.textContent = "Craft Experiences";
