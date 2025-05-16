@@ -56,14 +56,13 @@ Each activity must:
 6. Not include the attendance or participation in webinars, seminars or workshops.
 7. Ensure the description doesn't include what the impact of the activity will be on the learner.
 8. Be compliant with ESFA guidlines regarding off-the-job training.
-9. Ensure the estimated time is realistic and reflective of the activity.
 
 Return **only** a valid JSON array of 8 objects:
 [
   {
     "title": "Short summary (≤100 chars)",
     "description": "Detailed, robust description",
-    "time": "estimated time to complete in X hours"
+    "time": "an accurate and realistic estimated time to complete in X hours"
   },
   …
 ]
