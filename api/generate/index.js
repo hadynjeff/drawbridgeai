@@ -62,7 +62,7 @@ Return **only** a valid JSON array of 8 objects:
   {
     "title": "Short summary (≤100 chars)",
     "description": "Detailed, robust description",
-    "time": "an accurate and realistic estimated time to complete in X hours"
+    "time": "an accurate and realistic estimated time to claim as off-the-job training for the completion of the activity in X hours"
   },
   …
 ]
