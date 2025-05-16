@@ -132,10 +132,12 @@ function getImageForTitle(title) {
   }
   return "images/default.jpg";
 }
+
 function getLearningStyle(text) {
   text = text.toLowerCase();
   for (const k in keywordLearningStyleMap) {
-    if (new RegExp(\\b${k}\\b, "i").test(text)) {
+    // use backticks and escape the backslashes for the word-boundary regex
+    if (new RegExp(`\\b${k}\\b`, "i").test(text)) {
       return keywordLearningStyleMap[k];
     }
   }
@@ -144,26 +146,37 @@ function getLearningStyle(text) {
 
 // ------------ Modal logic ------------
 function showModal(act) {
-  document.getElementById('modalImage').src           = getImageForTitle(act.title);
-  document.getElementById('modalTitle').textContent   = act.title;
+  document.getElementById('modalImage').src             = getImageForTitle(act.title);
+  document.getElementById('modalTitle').textContent     = act.title;
   document.getElementById('modalDescription').textContent = act.description;
-  document.getElementById('modalTime').textContent    = act.time;
-  document.getElementById('modalStyle').textContent   = getLearningStyle(act.title);
+  document.getElementById('modalTime').textContent      = act.time;
+  document.getElementById('modalStyle').textContent     = getLearningStyle(act.title);
   document.getElementById('section2').classList.add('blurred');
   document.getElementById('modalOverlay').classList.remove('hidden');
+
   document.getElementById('copyBtn').onclick = () => {
-    const text = ${act.title}\n\n${act.description}\n\nEstimated Time: ${act.time}\nLearning Style: ${getLearningStyle(act.title)};
+    // wrap the text in a proper template literal
+    const text = `
+${act.title}
+
+${act.description}
+
+Estimated Time: ${act.time}
+Learning Style: ${getLearningStyle(act.title)}
+`;
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById('copyBtn');
       btn.textContent = "Copied!";
-      setTimeout(()=>btn.textContent="Copy Activity",1000);
+      setTimeout(() => btn.textContent = "Copy Activity", 1000);
     });
   };
 }
+
 function closeModal() {
   document.getElementById('section2').classList.remove('blurred');
   document.getElementById('modalOverlay').classList.add('hidden');
 }
+
 document.getElementById('modalOverlay').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
 });
@@ -176,6 +189,7 @@ startOverTop.onclick = () => {
   document.getElementById('section1').classList.remove('hidden');
   section2.classList.add('hidden');
 };
+
 let barTimer;
 function showTopBar() {
   if (section2.classList.contains('hidden')) return;
@@ -198,7 +212,7 @@ async function fetchIdeas() {
   const ideasContainer = document.getElementById("ideasContainer");
   const logoContainer  = document.getElementById("logo-container");
   const section1       = document.getElementById("section1");
-  const dropdown = document.querySelector('.dropdown');
+  const dropdown       = document.querySelector('.dropdown');
 
   // Gather & validate
   const name      = nameInput.value.trim();
@@ -212,10 +226,10 @@ async function fetchIdeas() {
   if (!valid) {
     btn.classList.add("error","error-animation");
     btnText.textContent = "Please enter valid values";
-    setTimeout(()=>{
+    setTimeout(() => {
       btn.classList.remove("error","error-animation");
       btnText.textContent = "Craft Experiences";
-    },2000);
+    }, 2000);
     return;
   }
 
@@ -224,7 +238,7 @@ async function fetchIdeas() {
   btnText.textContent = "Generating...";
   btnProg.style.width = "0%";
   let p = 0;
-  const iv = setInterval(()=>{
+  const iv = setInterval(() => {
     if (p < 99) {
       p++;
       btnProg.style.width = p + "%";
@@ -264,7 +278,7 @@ async function fetchIdeas() {
     ideas.forEach(a => {
       const card = document.createElement("div");
       card.className = "card";
-      card.innerHTML = 
+      card.innerHTML = `
         <div class="image_container">
           <img src="${getImageForTitle(a.title)}" class="activity-image"/>
         </div>
@@ -280,7 +294,7 @@ async function fetchIdeas() {
               <span class="style-label">${getLearningStyle(a.title)}</span>
             </div>
           </div>
-        </div>;
+        </div>`;
       card.onclick = () => showModal(a);
       ideasContainer.appendChild(card);
     });
@@ -308,12 +322,11 @@ async function fetchIdeas() {
 
 window.fetchIdeas = fetchIdeas;
 
-
 // ------------ Initialize button behavior ------------
-document.addEventListener("DOMContentLoaded",()=>{
-  const btn          = document.getElementById("generateButton");
-  const logoCont     = document.getElementById("logo-container");
-  const fieldsCont   = document.getElementById("fieldsContainer");
+document.addEventListener("DOMContentLoaded", () => {
+  const btn        = document.getElementById("generateButton");
+  const logoCont   = document.getElementById("logo-container");
+  const fieldsCont = document.getElementById("fieldsContainer");
   let step1 = false;
   btn.onclick = () => {
     if (!step1) {
