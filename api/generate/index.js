@@ -49,7 +49,7 @@ Activities must fall into one of the following categories:
 - Technical Training
 
 Each activity must:
-1. Include a rich, detailed, step-by-step description (110–150 words) with concrete examples and actionable guidance.
+1. Include a rich, detailed, step-by-step description (150–180 words) with concrete examples and actionable guidance.
 2. Use clear, instructional language directed at the learner.
 3. Align with the specific KSB: (${criteria}).
 4. Be overseen by a mentor or manager with accountability/feedback.
