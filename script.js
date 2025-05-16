@@ -220,16 +220,19 @@ async function fetchIdeas() {
   }
 
   // Loading UI
-  btn.disabled = true;
-  btnText.textContent = "Generating...";
-  btnProg.style.width = "0%";
-  let p = 0;
-  const iv = setInterval(()=>{
-    if (p < 99) {
-      p++;
-      btnProg.style.width = p + "%";
-    }
-  }, 200);
+   button.disabled = true;
+    buttonText.textContent = "Initialising";
+    buttonProgress.style.width = "0%";
+    clearInterval(progressInterval);
+    progressInterval = setInterval(() => {
+      if (progress < 99) {
+        progress++;
+        buttonProgress.style.width = `${progress}%`;
+        if (progress === 10) buttonText.textContent = "Clarifying Intent";
+        else if (progress === 40) buttonText.textContent = "Shaping Implementation";
+        else if (progress === 70) buttonText.textContent = "Evaluating Impact";
+      }
+    }, 270);
 
   ideasContainer.innerHTML = "";
 
