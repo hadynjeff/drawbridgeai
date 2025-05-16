@@ -49,14 +49,15 @@ Activities must fall into one of the following categories:
 - Technical Training
 
 Each activity must:
-1. Include a rich, detailed, step-by-step description (150–180 words) with concrete examples and actionable guidance.
+1. Include a rich, detailed, step-by-step description (minimum 110 words, up to 150 words) with concrete examples and actionable guidance on what they will do.
 2. Use clear, instructional language directed at the learner.
 3. Align with the specific KSB: (${criteria}).
-4. Be overseen by a mentor or manager with accountability/feedback.
-5. Use British English spelling ONLY.
-6. Not include attendance or participation in webinars, seminars or workshops.
-7. Not mention the impact the activity will have on the learner.
-8. Be compliant with ESFA guidelines regarding off-the-job training.
+4. Be overseen by a mentor or manager, and theres accountability or feedback involved.
+5. Use British English spelling ONLY. Do not use american spelling for words.
+6. Not include the attendance or participation in webinars, seminars or workshops.
+7. Ensure the description doesn't include what the impact of the activity will be on the learner.
+8. Be compliant with ESFA guidlines regarding off-the-job training.
+9. Have an estimated time which is a realistic amount of time that can be claimed as off-the-job training for that particular activity.
 
 Return **only** a valid JSON array of 8 objects:
 [
