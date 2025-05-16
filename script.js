@@ -198,6 +198,7 @@ async function fetchIdeas() {
   const ideasContainer = document.getElementById("ideasContainer");
   const logoContainer  = document.getElementById("logo-container");
   const section1       = document.getElementById("section1");
+  const dropdown = document.querySelector('.dropdown');
 
   // Gather & validate
   const name      = nameInput.value.trim();
@@ -285,6 +286,7 @@ async function fetchIdeas() {
     });
 
     // Reveal section2
+    dropdown.classList.add('hidden');
     logoContainer.classList.remove("hidden");
     document.getElementById("section2").classList.remove("hidden");
     smoothScrollTo(document.getElementById("section2").offsetTop, 500);
