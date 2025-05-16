@@ -20,7 +20,7 @@ function smoothScrollTo(targetY, duration) {
 // ------------ Globals ------------
 let progressInterval = null;
 
-// ------------ Keyword → Image map ------------
+// ------------ Data maps ------------
 const keywordImageMap = {
   shadow: ["images/workplace.jpg", "images/workplace2.jpg"],
   shadowing: ["images/workplace.jpg", "images/workplace.jpg"],
@@ -55,7 +55,6 @@ const keywordImageMap = {
   meeting: ["images/meeting.jpeg", "images/meeting2.webp"]
 };
 
-// ------------ Keyword → Learning style map ------------
 const keywordLearningStyleMap = {
   observe: "Visual",
   observing: "Visual",
@@ -91,9 +90,8 @@ const keywordLearningStyleMap = {
 };
 
 // ------------ Autocomplete suggestions ------------
-document.getElementById("apprenticeshipName").addEventListener("input", showSuggestions);
 const apprenticeshipNames = [
-  /* ... list of names ... */
+  // ... your list ...
 ];
 function showSuggestions() {
   const input = document.getElementById("apprenticeshipName");
@@ -120,12 +118,7 @@ function showSuggestions() {
   });
 }
 
-// ------------ UI toggles ------------
-function toggleInput() {
-  document.querySelector('.dropdown').classList.remove('hidden');
-  document.getElementById('section1').classList.remove('hidden');
-  document.getElementById('section2').classList.add('hidden');
-}
+document.getElementById("apprenticeshipName").addEventListener("input", showSuggestions);
 
 // ------------ Helpers ------------
 function getImageForTitle(title) {
@@ -170,31 +163,6 @@ function closeModal() {
   document.getElementById('section2').classList.remove('blurred');
   document.getElementById('modalOverlay').classList.add('hidden');
 }
-document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target===e.currentTarget) closeModal(); });
-
-// ------------ Top-bar show/hide ------------
-const section2     = document.getElementById('section2');
-const topBar       = document.getElementById('topBar');
-const startOverTop = document.getElementById('startOverTop');
-const refreshTop   = document.getElementById('refreshTop');
-startOverTop.onclick = () => toggleInput();
-refreshTop.onclick   = () => fetchIdeas();
-let barTimer;
-function showTopBar() {
-  if (section2.classList.contains('hidden')) return;
-  topBar.classList.add('visible');
-  topBar.classList.remove('hidden');
-  section2.classList.add('bar-visible');
-  clearTimeout(barTimer);
-  barTimer = setTimeout(() => {
-    topBar.classList.remove('visible');
-    topBar.classList.add('hidden');
-    section2.classList.remove('bar-visible');
-  }, 3000);
-}
-['mousemove','scroll','keydown','touchstart'].forEach(evt =>
-  window.addEventListener(evt, showTopBar, { passive: true })
-);
 
 // ------------ Main generation function ------------
 async function fetchIdeas() {
@@ -281,12 +249,10 @@ async function fetchIdeas() {
       ideasContainer.appendChild(card);
     });
 
-    // Reveal section2
     dropdown.classList.add('hidden');
-    document.getElementById('topBar').classList.add('hidden');
     logoContainer.classList.remove("hidden");
-    section2.classList.remove('hidden');
-    smoothScrollTo(section2.offsetTop,500);
+    document.getElementById('section2').classList.remove('hidden');
+    smoothScrollTo(document.getElementById('section2').offsetTop,500);
     setTimeout(()=>section1.classList.add('hidden'),800);
   } catch (err) {
     alert("Unexpected error:\n"+err.message);
@@ -298,21 +264,51 @@ async function fetchIdeas() {
 }
 window.fetchIdeas = fetchIdeas;
 
-// ------------ Initialize button behavior ------------
-document.addEventListener("DOMContentLoaded",()=>{
-  const btn          = document.getElementById('generateButton');
-  const logoCont     = document.getElementById('logo-container');
-  const fieldsCont   = document.getElementById('fieldsContainer');
-  let step1 = false;
-  btn.onclick = ()=>{
-    if (!step1) {
-      step1=true;
-      logoCont.classList.add('shifted');
-      fieldsCont.classList.add('expanded');
-      btn.querySelector('span').textContent='Craft Experiences';
+// ------------ DOM Ready ------------
+document.addEventListener("DOMContentLoaded", () => {
+  // Button onboarding
+  const generateButton = document.getElementById('generateButton');
+  const logoContainer  = document.getElementById('logo-container');
+  const fieldsContainer = document.getElementById('fieldsContainer');
+  let onboarding = false;
+  generateButton.addEventListener('click', () => {
+    if (!onboarding) {
+      onboarding = true;
+      logoContainer.classList.add('shifted');
+      fieldsContainer.classList.add('expanded');
+      generateButton.querySelector('span').textContent = 'Craft Experiences';
     } else {
-      fieldsCont.classList.remove('expanded');
+      fieldsContainer.classList.remove('expanded');
       fetchIdeas();
     }
-  };
-});
+  });
+
+  // Modal backdrop
+  const modalOverlay = document.getElementById('modalOverlay');
+  modalOverlay?.addEventListener('click', e => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  // Top-bar controls & auto-hide
+  const section2      = document.getElementById('section2');
+  const topBar        = document.getElementById('topBar');
+  const startOverTop  = document.getElementById('startOverTop');
+  const refreshTop    = document.getElementById('refreshTop');
+
+  startOverTop?.addEventListener('click', toggleInput);
+  refreshTop?.addEventListener('click', fetchIdeas);
+
+  let barTimer;
+  function showTopBar() {
+    if (section2.classList.contains('hidden')) return;
+    topBar.classList.add('visible');
+    topBar.classList.remove('hidden');
+    section2.classList.add('bar-visible');
+    clearTimeout(barTimer);
+    barTimer = setTimeout(() => {
+      topBar.classList.remove('visible');
+      topBar.classList.add('hidden');
+      section2.classList.remove('bar-visible');
+    }, 3000);
+  }
+  ['mousemove','scroll','keydown','touchstart']
