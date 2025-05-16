@@ -1,4 +1,4 @@
-name: Deploy static site to Azure Web App
+name: Deploy static site to Azure Web App (UK South)
 
 on:
   push:
@@ -13,7 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Zip static files
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Prepare static site files
         run: |
           mkdir site
           cp index.html script.js style.css -t site/
@@ -23,7 +28,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: drawbridgewebuk  # Replace with your exact Azure Web App name
+          app-name: drawbridgewebuk          # 👈 Your Azure Web App name
           slot-name: 'production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: site.zip
