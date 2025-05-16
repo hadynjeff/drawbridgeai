@@ -340,6 +340,144 @@ function showTopBar() {
 );
 
 // ------------ Main generation function ------------
+// ------------ Smooth scroll util ------------
+function smoothScrollTo(targetY, duration) {
+  const startY = window.scrollY;
+  const distanceY = targetY - startY;
+  let startTime = null;
+  function animation(currentTime) {
+    if (startTime === null) startTime = currentTime;
+    const timeElapsed = currentTime - startTime;
+    const progress = Math.min(timeElapsed / duration, 1);
+    const eased = progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    window.scrollTo(0, startY + distanceY * eased);
+    if (timeElapsed < duration) requestAnimationFrame(animation);
+  }
+  requestAnimationFrame(animation);
+}
+
+// ------------ Keyword → Image map ------------
+const keywordImageMap = {
+  /* ... your existing mappings ... */
+};
+
+// ------------ Keyword → Learning style map ------------
+const keywordLearningStyleMap = {
+  /* ... your existing mappings ... */
+};
+
+// ------------ Apprenticeship name suggestions ------------
+const apprenticeshipNames = [
+  /* ... your existing list ... */
+];
+
+// ------------ Autocomplete suggestions ------------
+document.getElementById("apprenticeshipName")
+  .addEventListener("input", showSuggestions);
+function showSuggestions() {
+  const input = document.getElementById("apprenticeshipName");
+  const box   = document.getElementById("suggestions");
+  const filter = input.value.toLowerCase().trim();
+  box.innerHTML = ""; box.style.display = "none";
+  if (!filter) return;
+  const matches = apprenticeshipNames.filter(n => n.toLowerCase().includes(filter));
+  if (!matches.length) return;
+  box.style.display = "block";
+  matches.forEach(n => {
+    const d = document.createElement("div");
+    d.textContent = n;
+    d.style.padding = "10px";
+    d.style.cursor  = "pointer";
+    d.onclick = () => {
+      input.value = n;
+      box.innerHTML = "";
+      box.style.display = "none";
+    };
+    box.appendChild(d);
+  });
+}
+
+// ------------ Helpers ------------
+function getImageForTitle(title) {
+  const t = title.toLowerCase();
+  for (const k in keywordImageMap) {
+    if (t.includes(k)) {
+      const arr = keywordImageMap[k];
+      return arr[Math.floor(Math.random()*arr.length)];
+    }
+  }
+  return "images/default.jpg";
+}
+
+function getLearningStyle(text) {
+  text = text.toLowerCase();
+  for (const k in keywordLearningStyleMap) {
+    if (new RegExp(`\\b${k}\\b`, "i").test(text)) {
+      return keywordLearningStyleMap[k];
+    }
+  }
+  return "All Learners";
+}
+
+// ------------ Modal logic ------------
+function showModal(act) {
+  document.getElementById('modalImage').src              = getImageForTitle(act.title);
+  document.getElementById('modalTitle').textContent      = act.title;
+  document.getElementById('modalDescription').textContent = act.description;
+  document.getElementById('modalTime').textContent       = act.time;
+  document.getElementById('modalStyle').textContent      = getLearningStyle(act.title);
+  document.getElementById('section2').classList.add('blurred');
+  document.getElementById('modalOverlay').classList.remove('hidden');
+
+  document.getElementById('copyBtn').onclick = () => {
+    const text = `
+${act.title}
+
+${act.description}
+
+Estimated Time: ${act.time}
+Learning Style: ${getLearningStyle(act.title)}
+`;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = "Copy Activity", 1000);
+    });
+  };
+}
+
+function closeModal() {
+  document.getElementById('section2').classList.remove('blurred');
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ------------ Top-bar show/hide ------------
+const section2     = document.getElementById('section2');
+const topBar       = document.getElementById('topBar');
+const startOverTop = document.getElementById('startOverTop');
+startOverTop.onclick = () => {
+  document.getElementById('section1').classList.remove('hidden');
+  section2.classList.add('hidden');
+};
+
+let barTimer;
+function showTopBar() {
+  if (section2.classList.contains('hidden')) return;
+  topBar.classList.add('visible');
+  clearTimeout(barTimer);
+  barTimer = setTimeout(() => topBar.classList.remove('visible'), 3000);
+}
+['mousemove','scroll','keydown','touchstart'].forEach(evt =>
+  window.addEventListener(evt, showTopBar, { passive: true })
+);
+
+// ------------ Main generation function ------------
 async function fetchIdeas() {
   const nameInput      = document.getElementById("apprenticeshipName");
   const workInput      = document.getElementById("workplaceType");
@@ -374,7 +512,7 @@ async function fetchIdeas() {
   // Loading UI
   btn.disabled = true;
 
-  // rotating progress messages
+  // ← NEW: rotating progress messages
   const progressMessages = [
     "Generating ideas\u2026",
     "Still working\u2026",
@@ -384,7 +522,7 @@ async function fetchIdeas() {
   let msgIndex = 0;
   btnText.textContent = progressMessages[msgIndex];
 
-  // bar animation
+  // ← EXISTING: progress‐bar animation
   btnProg.style.width = "0%";
   let p = 0;
   const progressInterval = setInterval(() => {
@@ -394,7 +532,7 @@ async function fetchIdeas() {
     }
   }, 200);
 
-  // text rotation
+  // ← NEW: swap message every 8 seconds
   const textInterval = setInterval(() => {
     msgIndex = (msgIndex + 1) % progressMessages.length;
     btnText.textContent = progressMessages[msgIndex];
@@ -406,7 +544,11 @@ async function fetchIdeas() {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, workplaceType: workplace, criteria })
+      body: JSON.stringify({
+        name,
+        workplaceType: workplace,
+        criteria
+      })
     });
 
     const raw = await response.text();
@@ -455,25 +597,16 @@ async function fetchIdeas() {
   } catch (err) {
     alert("Unexpected error:\n" + err.message);
   } finally {
-    // stop intervals
+    // ← clear both intervals
     clearInterval(progressInterval);
     clearInterval(textInterval);
 
-    // fill bar to 100%
     btnProg.style.width = "100%";
-
-    // only reset the button once it's out of view
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) {
-          btnText.textContent = "Craft Experiences";
-          btn.disabled = false;
-          btnProg.style.width = "0%";
-          obs.disconnect();
-        }
-      });
-    });
-    observer.observe(btn);
+    setTimeout(() => {
+      btnText.textContent = "Craft Experiences";
+      btn.disabled = false;
+      btnProg.style.width = "0%";
+    }, 500);
   }
 }
 
@@ -497,3 +630,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 });
+
