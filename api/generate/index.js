@@ -1,4 +1,4 @@
-// Using CommonJS for Static Web Apps managed Functions
+// api/generate/index.js
 const OpenAI = require("openai");
 
 module.exports = async function (context, req) {
@@ -26,10 +26,13 @@ module.exports = async function (context, req) {
   }
 
   const openai = new OpenAI({ apiKey: key });
-  const systemContent = `You are tasked with generating 8 off-the-job training activities that are fully ESFA-compliant for a UK apprentice.
+
+  // Build your messages
+  const systemContent = `
+You are tasked with generating 8 off-the-job training activities that are fully ESFA-compliant for a UK apprentice.
 
 Apprenticeship standard: ${name}
-Workplace type: ${workplace}
+Workplace type: ${workplaceType}
 Learning focus/criteria: ${criteria}.
 
 Activities must fall into one of the following categories:
@@ -42,31 +45,37 @@ Activities must fall into one of the following categories:
 - Reflective Learning Activities
 - Practical Skills Development (outside usual day-to-day tasks)
 - Workplace secondment/rotation
-- Independant Study
+- Independent Study
 - Technical Training
 
-
 Each activity must:
-1. Include a rich, detailed, step-by-step description (minimum 110 words, up to 150 words) with concrete examples and actionable guidance on what they will do.
+1. Include a rich, detailed, step-by-step description (110–150 words) with concrete examples and actionable guidance.
 2. Use clear, instructional language directed at the learner.
 3. Align with the specific KSB: (${criteria}).
-4. Be overseen by a mentor or manager, and theres accountability or feedback involved.
+4. Be overseen by a mentor or manager with accountability/feedback.
 5. Use British English spelling ONLY.
-6. Not include the attendance or participation in webinars, seminars or workshops.
-7. Ensure the description doesn't include what the impact of the activity will be on the learner.
-8. Be compliant with ESFA guidlines regarding off-the-job training.
+6. Not include attendance or participation in webinars, seminars or workshops.
+7. Not mention the impact on the learner.
+8. Be compliant with ESFA guidelines regarding off-the-job training.
 
-Return a valid JSON array of 8 objects:
+Return **only** a valid JSON array of 8 objects:
 [
-  {"title":"Short summary (≤100 chars)","description":"Detailed, robust description"," time":"estimated time to complete the activity in X hours"},
+  {
+    "title": "Short summary (≤100 chars)",
+    "description": "Detailed, robust description",
+    "time": "estimated time to complete in X hours"
+  },
   …
-]` },
-          { role: "user", content:
-`Standard: ${name}
-Workplace: ${workplace}
+]
+`.trim();
+
+  const userContent = `
+Standard: ${name}
+Workplace: ${workplaceType}
 KSB: ${criteria}
 
-Return only the JSON array of 8 items.`.trim();
+Return only the JSON array of 8 items.
+`.trim();
 
   try {
     const resp = await openai.chat.completions.create({
@@ -74,16 +83,15 @@ Return only the JSON array of 8 items.`.trim();
       temperature: 0.8,
       messages: [
         { role: "system", content: systemContent },
-        { role: "user",   content: "Return only the JSON array of 8 items." }
+        { role: "user",   content: userContent   }
       ]
     });
 
-    // Strip markdown fences & parse
     let txt = resp.choices[0].message.content
       .replace(/```(?:json)?/g, "")
       .trim();
-    const start = txt.indexOf("["),
-          end   = txt.lastIndexOf("]") + 1;
+    const start = txt.indexOf("[");
+    const end   = txt.lastIndexOf("]") + 1;
     const ideas = JSON.parse(txt.slice(start, end));
 
     context.res = {
@@ -91,6 +99,7 @@ Return only the JSON array of 8 items.`.trim();
       headers: { "Content-Type": "application/json" },
       body: ideas
     };
+
   } catch (err) {
     context.log.error("❌ Function error:", err);
     context.res = {
