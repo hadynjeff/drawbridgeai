@@ -13,7 +13,7 @@ function smoothScrollTo(targetY, duration) {
     window.scrollTo(0, startY + distanceY * eased);
     if (timeElapsed < duration) requestAnimationFrame(animation);
   }
-  requestAnimationFrame(animation);
+  requestAnimationFrame(animation); 
 }
 
 // ------------ Keyword → Image map ------------
